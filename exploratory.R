@@ -41,5 +41,7 @@ ggplot(data=functionality, aes(x = functionality,color=functionality,fill=functi
   geom_bar(aes(y = (..count..)/sum(..count..))) + 
   scale_y_continuous(labels = percent)
 
-#
-
+# vendor column variable
+vendor<-count(sprint[,12],vendor)
+vendor=filter(vendor,n>5000)
+ggplot(data=vendor)+geom_bar(mapping=aes(x=vendor,y= n,fill=vendor),stat="identity")
