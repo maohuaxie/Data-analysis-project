@@ -9,6 +9,8 @@ library(bit64)
 library(RColorBrewer)
 library(choroplethr)
 require(scales)
+library(readr)
+library(lubridate)
 # load data
 sprint<- fread('D:/Sprint/sprintproject/1013sprint.csv')
 dim(sprint)
@@ -45,3 +47,47 @@ ggplot(data=functionality, aes(x = functionality,color=functionality,fill=functi
 vendor<-count(sprint[,12],vendor)
 vendor=filter(vendor,n>5000)
 ggplot(data=vendor)+geom_bar(mapping=aes(x=vendor,y= n,fill=vendor),stat="identity")
+
+# vendor and Tcp.Downlink.Throughput column variable
+# By using tplyr pakacage or aggregate function to do this
+TCP.Downlink.Throughput.Mbps.<- sprint[,c(12,27)]
+aggregate(sprint[,c(12,27)], by=list(sprint$vendor), FUN=function(x) { mean(!is.na(x))})
+
+data=TCP.Downlink.Throughput.Mbps. %>% 
+  group_by(vendor) %>%
+  summarise_all(funs(mean(!is.na(.))))%>% arrange(desc(TCP.Downlink.Throughput.Mbps.))
+ggplot(data=data[1:20,])+geom_bar(mapping=aes(x=vendor,y= TCP.Downlink.Throughput.Mbps.,fill=vendor),stat="identity")
+
+# Hour and Tcp.Downlink.Throughput column variable
+Hour<- sprint[,c(7,27)]
+Hours=Hour %>% 
+  group_by(hour) %>%
+  summarise_all(funs(mean(!is.na(.))))%>% arrange(desc(TCP.Downlink.Throughput.Mbps.))
+ggplot(data=Hours[1:20,])+geom_bar(mapping=aes(x=hour,y= TCP.Downlink.Throughput.Mbps.,fill=hour),stat="identity")
+
+# convert datetime to POSIXct
+sprint$date<-as.POSIXct(sprint$date,
+                                    format = "%Y-%m-%d %H:%M",
+                                    tz = "America/New_York")
+sprint%>% 
+  mutate(hour_of_day = hour(as.POSIXct(sprint$date,
+                                       format = "%Y-%m-%d %H:%M",
+                                      tz = "America/New_York")))
+# level2 and Tcp.Downlink.Throughput column variable
+
+level2<-sprint[,c(2,27)]
+
+level=level2 %>% 
+  group_by(level_2_name) %>%
+  summarise_all(funs(mean(!is.na(.))))%>% arrange(desc(TCP.Downlink.Throughput.Mbps.))
+ggplot(data=level[1:20,])+geom_bar(mapping=aes(x=level_2_name,y= TCP.Downlink.Throughput.Mbps.,fill=level_2_name),stat="identity")
+
+# functionality and Tcp.Downlink.Throughput column variable
+
+fun2<- sprint[,c(11,27)]
+
+fun=fun2 %>% 
+  group_by(functionality) %>%
+  summarise_all(funs(mean(!is.na(.))))%>% arrange(desc(TCP.Downlink.Throughput.Mbps.))
+ggplot(data=fun[1:20,])+geom_bar(mapping=aes(x=functionality,y= TCP.Downlink.Throughput.Mbps.,fill=functionality),stat="identity")
+
