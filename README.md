@@ -5,3 +5,5 @@
  Identify Key performance indicators that determine customer experience
  
  Develop a predictive system to determine a user’s experience
+ 
+ Build decision tree, random froest and KNN model
