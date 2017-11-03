@@ -135,10 +135,12 @@ table(other.g)
 
 
 a <- factor(c('adult','adult','juvenile','juvenile','adult','adult',
-               'adult','juvenile','adult','juvenile'))
+              'adult','juvenile','adult','juvenile'))
+a
 
 
 t <- table(a,g)
+t
 margin.table(t,1)
 margin.table(t,2)
 
@@ -298,8 +300,8 @@ m1+m2
 ### Lists
 ###################################################
 my.lst <- list(stud.id=34453, 
-                stud.name="John", 
-                stud.marks=c(14.3,12,15,19))
+               stud.name="John", 
+               stud.marks=c(14.3,12,15,19))
 
 
 my.lst
@@ -347,8 +349,8 @@ unlist(my.lst)
 ### Data Frames
 ###################################################
 my.dataset <- data.frame(site=c('A','B','A','A','B'),
- season=c('Winter','Summer','Summer','Spring','Fall'),
- pH = c(7.4,6.3,8.6,7.2,8.9))
+                         season=c('Winter','Summer','Summer','Spring','Fall'),
+                         pH = c(7.4,6.3,8.6,7.2,8.9))
 
 
 my.dataset[3,2]
@@ -372,7 +374,7 @@ subset(my.dataset,season == 'Summer',season:pH)
 
 
 my.dataset[my.dataset$season == 'Summer','pH'] <- 
-     my.dataset[my.dataset$season == 'Summer','pH'] + 1
+  my.dataset[my.dataset$season == 'Summer','pH'] + 1
 
 
 my.dataset$NO3 <- c(234.5,256.6,654.1,356.7,776.4)
@@ -397,9 +399,9 @@ my.dataset
 ###################################################
 
 se <- function(x) {
-   v <- var(x)
-   n <- length(x)
-   return(sqrt(v/n))
+  v <- var(x)
+  n <- length(x)
+  return(sqrt(v/n))
 }
 
 
@@ -407,21 +409,21 @@ se(c(45,2,3,5,76,2,4))
 
 
 basic.stats <- function(x,more=F) {
-   stats <- list()
- 
-   clean.x <- x[!is.na(x)]
- 
-   stats$n <- length(x)
-   stats$nNAs <- stats$n-length(clean.x)
- 
-   stats$mean <- mean(clean.x)
-   stats$std <- sd(clean.x)
-   stats$med <- median(clean.x)
-   if (more) {
-     stats$skew <- sum(((clean.x-stats$mean)/stats$std)^3)/length(clean.x)
-     stats$kurt <- sum(((clean.x-stats$mean)/stats$std)^4)/length(clean.x) - 3
-   }
-   unlist(stats)
+  stats <- list()
+  
+  clean.x <- x[!is.na(x)]
+  
+  stats$n <- length(x)
+  stats$nNAs <- stats$n-length(clean.x)
+  
+  stats$mean <- mean(clean.x)
+  stats$std <- sd(clean.x)
+  stats$med <- median(clean.x)
+  if (more) {
+    stats$skew <- sum(((clean.x-stats$mean)/stats$std)^3)/length(clean.x)
+    stats$kurt <- sum(((clean.x-stats$mean)/stats$std)^4)/length(clean.x) - 3
+  }
+  unlist(stats)
 }
 
 
@@ -436,3 +438,26 @@ f <- function(x) {
     cat(x,'*',i,'=',res,'\n')
   }
 }
+
+library(tibble)
+
+dat <- tibble (Tempcels = sample(-10:40,size = 100, replace = T),TempFahr = Tempcels*9/5,Location =
+                 rep(letters[1:2],each = 50))
+dat
+
+data(iris)
+
+dim(iris)
+class(iris)
+ir<- as_tibble(iris)
+class(ir)
+ir
+print (ir, n=Inf, width = Inf)
+iris[1:15,"Petal.Length"]
+class(iris[1:15,"Petal.Length"])
+ir[1:15, "Petal.Length"]
+ir$Petal.Length[1:15]
+ir[["Petal.Length"]][1:15]
+library(dplyr)
+select(filter(ir,Species == "setosa"), Petal.Width,Petal.Length)
+filter(ir,Species == "setosa") %>% select (c(Petal.Width,Petal.Length))
